@@ -1,0 +1,168 @@
+﻿{
+
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+    "virtualnetworkName": {
+      "type": "string"
+    },
+    "subnetName": {
+      "type": "string"
+    },
+    "loadbalancerName": {
+      "type": "string"
+    },
+    "frontendname": {
+      "type": "string"
+    },
+    "backendpoolname": {
+      "type": "string"
+    },
+    "lbrules": {
+      "type": "array"
+    },
+    "lbprobe": {
+      "type": "array"
+    }
+
+  },
+  "variables": {
+
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualnetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]"
+
+  },
+
+  "resources": [
+
+    {
+
+      "apiVersion": "2017-03-01",
+
+      "name": "[parameters('loadBalancerName')]",
+
+      "type": "Microsoft.Network/loadBalancers",
+
+      "location": "[resourceGroup().location]",
+
+      "properties": {
+
+        "frontendIPConfigurations": [
+
+          {
+
+            "name": "[parameters('frontendname')]",
+
+            "properties": {
+
+              "subnet": {
+
+                "id": "[variables('subnetRef')]"
+
+              }
+
+            }
+
+          }
+
+        ],
+
+        "backendAddressPools": [
+
+          {
+
+            "name": "[parameters('backendpoolname')]"
+
+          }
+
+        ],
+
+        "copy": [
+
+          {
+
+            "name": "probes",
+
+            "count": "[length(parameters('lbprobe'))]",
+
+            "input": {
+
+              "name": "[parameters('lbprobe')[copyIndex('probes')].name]",
+
+              "properties": {
+
+                "protocol": "[parameters('lbprobe')[copyIndex('probes')].properties.protocol]",
+
+                "port": "[parameters('lbprobe')[copyIndex('probes')].properties.port]",
+
+                "intervalInSeconds": "[parameters('lbprobe')[copyIndex('probes')].properties.intervalInSeconds]",
+
+                "numberOfProbes": "[parameters('lbprobe')[copyIndex('probes')].properties.numberOfProbes]"
+
+
+              }
+
+            }
+
+          },
+
+          {
+
+            "name": "loadBalancingRules",
+
+            "count": "[length(parameters('lbRules'))]",
+
+            "input": {
+
+              "name": "[parameters('lbRules')[copyIndex('loadBalancingRules')].name]",
+
+              "properties": {
+
+                "frontendIPConfiguration": {
+
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/frontendIpConfigurations/',parameters('lbRules')[copyIndex('loadBalancingRules')].properties.frontendIPConfiguration.id)]"
+
+                },
+
+                "backendAddressPool": {
+
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/backendAddressPools/',parameters('lbRules')[copyIndex('loadBalancingRules')].properties.backendAddressPool.id)]"
+
+                },
+
+                "probe": {
+
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/probes/',parameters('lbRules')[copyIndex('loadBalancingRules')].properties.probe.id)]"
+
+                },
+
+                "protocol": "[parameters('lbRules')[copyIndex('loadBalancingRules')].properties.protocol]",
+
+                "frontendPort": "[parameters('lbRules')[copyIndex('loadBalancingRules')].properties.frontendPort]",
+
+                "backendPort": "[parameters('lbRules')[copyIndex('loadBalancingRules')].properties.backendPort]",
+
+                "idleTimeoutInMinutes": "[parameters('lbRules')[copyIndex('loadBalancingRules')].properties.idleTimeoutInMinutes]"
+
+              }
+
+            }
+
+          }
+
+        ]
+
+      }
+
+    }
+
+  ],
+
+  "outputs": {
+
+  
+    }
+
+  }
