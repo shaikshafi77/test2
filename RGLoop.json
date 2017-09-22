@@ -12,15 +12,14 @@
       "type": "string"
     },
     "RGinputobject": {
-      "type": "string"
+      "type": "object"
     }
 
   },
   "variables": {
-    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/azuredeploy.json",
+    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/VMloop.json",
     "inputarray": "[parameters('RGinputobject').inputarray]",
-    "ResourceGroup": "[parameters('RGinputobject').Name]",
-    "vnetid": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualnetworkName'))]"
+    "ResourceGroup": "[parameters('RGinputobject').Name]"
   },
   "resources": [
     {
@@ -30,7 +29,7 @@
       "resourceGroup": "[variables('ResourceGroup')]",
       "copy": {
         "name": "VMloop",
-        "count": "[length(parameters('RGinputobject'))]",
+        "count": "[length(variables('inputarray'))]",
         "mode": "Parallel"
 
       },
