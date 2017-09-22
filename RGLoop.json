@@ -1,0 +1,76 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appsubnetid": {
+      "type": "string"
+    },
+    "websubnetid": {
+      "type": "string"
+    },
+    "imageid": {
+      "type": "string"
+    },
+    "RGinputobject": {
+      "type": "string"
+    }
+
+  },
+  "variables": {
+    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/azuredeploy.json",
+    "inputarray": "[parameters('RGinputobject').inputarray]",
+    "ResourceGroup": "[parameters('RGinputobject').Name]",
+    "vnetid": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualnetworkName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "[concat('RGdeployment',copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('ResourceGroup')]",
+      "copy": {
+        "name": "VMloop",
+        "count": "[length(parameters('RGinputobject'))]",
+        "mode": "Parallel"
+
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('templatelink')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          
+          "subnetid": {
+            "value": "[if(equals(variables('inputarray')[copyIndex()].type, 'app'), parameters('appsubnetid'), parameters('websubnetid'))]"
+          },
+          "images_SLES12SP1_HCM_Image_id": {
+            "value": "/subscriptions/3fd8391b-f9e7-4d54-bf96-f7fb9844c4c1/resourceGroups/HCM-Auto-Test-RG/providers/Microsoft.Compute/images/SLES12-SP1-Image"
+          },
+          "vmNamePrefix": {
+            "value": "[variables('inputarray')[copyIndex()].Name]"
+          },
+          "numberOfInstances": {
+            "value": "[variables('inputarray')[copyIndex()].count]"
+          },
+          "startingIndex": {
+            "value": "[variables('inputarray')[copyIndex()].Index]"
+          },
+          "lbid": {
+            "value": "[variables('inputarray')[copyIndex()].lbid]"
+          },
+          "haslb": {
+            "value": "[if(equals(variables('inputarray')[copyIndex()].lbid, json('null')), 'no', 'yes')]"
+          },
+          "vmSize": {
+            "value": "[variables('inputarray')[copyIndex()].vmsize]"
+          },
+          "availabilitysetid": {
+            "value": "[variables('inputarray')[copyIndex()].asid]"
+          }
+        }
+      }
+    }
+  ]
+}
