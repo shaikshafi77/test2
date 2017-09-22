@@ -44,7 +44,7 @@
 
     "subnetid": "[parameters('subnetid')]",
     "lbid": "[concat(resourceId('Microsoft.Network/loadBalancers', 'ps40brpt-elb01'), '/backendAddressPools/', parameters('lbid'))]",
-    "asid": "[resourceId('Microsot.Compute/availabilitySets', parameters('availabilitysetid'))]"
+    "asid": "[parameters('availabilitysetid')]"
   },
   "resources": [
     {
