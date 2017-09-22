@@ -43,7 +43,7 @@
     "sshKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCnPEBdVgCRvQa5Zor+Xda7LarIk4jDiLVFalvqYLfiLwuJMD4q4E9WQXbd/uvAslv80xDC9B/QGT2q84uvonpyjX8MkrGjoY0uh2n6rnn0q5QZzbOgbP8kJne2yQYh3UU0f4qUUFdzi1f0+C11Mc07jYJUTrIXQ7lgVuZ7oUQlyQOEX1NbHnEOnMcl3sLaiFpqYTH4aYCFqn1eordjF2f6OHllP5OetRtMb/dYTYMjYkVzeNEJKzE/ohxI2Pnx6UMoWN1FfPj2b0NBlbXT64MT8oYG6K2kaHSLGSmVEPoCcvNO0WUiuZlJM7Y7WdJKXR58xVxmk3H7Kx9S4XgT3M5 deployer@ps99afrundeck01",
 
     "subnetid": "[parameters('subnetid')]",
-    "lbid": "[concat(resourceId('Microsoft.Network/loadBalancers', 'ps40brpt-elb01'), '/backendAddressPools/', parameters('lbid'))]",
+    "lbid": "[parameters('lbid')]",
     "asid": "[parameters('availabilitysetid')]"
   },
   "resources": [
