@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentAKvVaultName": {
+      "type": "string"
+    },
+    "deploymentAkvObjectId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "tenantId": "[subscription().tenantId]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[parameters('deploymentAkvVaultName')]",
+      "apiVersion": "2015-06-01",
+      "location": "[variables('location')]",
+      "properties": {
+        "accessPolicies": [
+          {
+            "objectId": "[parameters('deploymentAkvObjectId')]",
+            "tenantId": "[variables('tenantId')]",
+            "permissions": {
+              "keys": [
+                "Get",
+                "List",
+                "Update",
+                "Create",
+                "Import",
+                "Delete",
+                "Backup",
+                "Restore"
+              ],
+              "secrets": [
+                "All"
+              ],
+              "certificates": []
+            }
+          }
+        ],
+        "enabledForDeployment": "true",
+        "enabledForTemplateDeployment": "true",
+        "enabledForVolumeEncryption": "true",
+        "sku": {
+          "name": "Standard",
+          "family": "A"
+        },
+        "tenantId": "[variables('tenantId')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

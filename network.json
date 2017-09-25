@@ -1,0 +1,120 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetname": {
+      "type": "string"
+    },
+    "vnetprefix": {
+      "type": "string"
+    },
+    "appsubnetname": {
+      "type": "string"
+    },
+    "appsubnetprefix": {
+      "type": "string"
+    },
+    "websubnetname": {
+      "type": "string"
+    },
+    "websubnetprefix": {
+      "type": "string"
+    },
+    "dbsubnetname": {
+      "type": "string"
+    },
+    "dbsubnetprefix": {
+      "type": "string"
+    },
+    "appNsgName": {
+      "type": "string"
+    },
+    "webNsgName": {
+      "type": "string"
+    },
+    "dbNsgName": {
+      "type": "string"
+    },
+    "db_securityrules": {
+      "type": "array"
+    },
+    "web_securityrules": {
+      "type": "array"
+    }
+  },
+  "variables": {
+    "networkApiVersion": "2015-06-15"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('networkApiVersion')]",
+      "comments": "",
+      "dependsOn": [],
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('dbNsgName')]",
+      "properties": {
+        "securityRules": "[parameters('db_securityrules')]"
+      },
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "comments": "",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('webNsgName')]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": "[parameters('web_securityrules')]"
+
+      },
+      "dependsOn": []
+    },
+    {
+      "name": "[parameters('vnetname')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2017-06-01",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('dbNsgName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('webNsgName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetprefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('appsubnetname')]",
+            "properties": {
+              "addressPrefix": "[parameters('appsubnetprefix')]"
+            }
+          },
+          {
+            "name": "[parameters('websubnetname')]",
+            "properties": {
+              "addressPrefix": "[parameters('websubnetprefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('webNsgName'))]"
+              }
+            }
+          },
+          {
+            "name": "[parameters('dbsubnetname')]",
+            "properties": {
+              "addressPrefix": "[parameters('dbsubnetprefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('dbNsgName'))]"
+              }
+            }
+          }
+        ]
+      }
+    }
+
+
+  ],
+  "outputs": {
+  }
+}
