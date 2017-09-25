@@ -1,0 +1,68 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "elbNames": {
+      "type": "array"
+    },
+    "ipv4PublicIPAddressNames": {
+      "type": "array"
+    },
+    "frontendIPConfigurationName": {
+      "type": "string"
+    },
+    "backendAddressPoolName": {
+      "type": "string"
+    },
+    "lbrules": {
+      "type": "array"
+    },
+    "lbprobe": {
+      "type": "array"
+    }
+
+  },
+  "variables": {
+    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/ELB.json"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "[concat('Ilbdeployment',copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "copy": {
+        "name": "ilbloop",
+        "count": "[length(parameters('elbNames'))]",
+        "mode": "Parallel"
+
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('templatelink')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ipv4PublicIPAddressName": {
+            "value": "[parameters('ipv4PublicIPAddressNames')[copyIndex()]]"
+          },
+          "elbName": {
+            "value": "[parameters('elbNames')[copyIndex()]]"
+          },
+          "frontendIPConfigurationName": {
+            "value": "[parameters('frontendIPConfigurationName')]"
+          },
+          "backendAddressPoolName": {
+            "value": "[parameters('backendAddressPoolName')]"
+          },
+          "lbrules": {
+            "value": "[parameters('lbrules')[copyIndex()]]"
+          },
+          "lbprobe": {
+            "value": "[parameters('lbprobe')[copyIndex()]]"
+          }
+        }
+      }
+    }
+  ]
+}

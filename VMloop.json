@@ -67,7 +67,7 @@
               },
               "loadBalancerBackendAddressPools": [
                 {
-                  "id": "[if(equals(parameters('haslb'), 'yes'), variables('lbid'), json('null'))]"
+                  "id": "[if(equals(parameters('lbid'), json('null')), variables('lbid'), json('null'))]"
                 }
               ]
             }

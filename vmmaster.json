@@ -1,0 +1,58 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appsubnetid": {
+      "type": "string"
+    },
+    "websubnetid": {
+      "type": "string"
+    },
+    "imageid": {
+      "type": "string"
+    },
+    "vmmasterinput": {
+      "type": "array"
+    }
+
+  },
+  "variables": {
+    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/RGLoop.json"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('RGdeployment',copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup":"[parameters('vmmasterinput')[copyIndex()].Name]",
+      "copy": {
+        "name": "VMMaster",
+        "count": "[length(parameters('vmmasterinput'))]",
+        "mode": "Parallel"
+
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('templatelink')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+
+          "appsubnetid": {
+            "value": "[parameters('appsubnetid')]"
+          },
+          "websubnetid": {
+            "value": "[parameters('websubnetid')]"
+          },
+          "imageid": {
+            "value": "imageid"
+          },
+          "RGinputobject": {
+            "value": "[parameters('vmmasterinput')[copyIndex()]]"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ilbNames": {
+      "type": "array"
+    },
+    "virtualnetworkName": {
+      "type": "string"
+    },
+    "subnetName": {
+      "type": "string"
+    },
+    "frontendname": {
+      "type": "string"
+    },
+    "backendpoolname": {
+      "type": "string"
+    },
+    "lbrules": {
+      "type": "array"
+    },
+    "lbprobe": {
+      "type": "array"
+    }
+    
+  },
+  "variables": {
+    "templatelink": "https://raw.githubusercontent.com/shaikshafi77/test2/master/azuredeploy.json"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "[concat('Ilbdeployment',copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "copy": {
+        "name": "ilbloop",
+        "count": "[length(parameters('ilbNames'))]",
+        "mode": "Parallel"
+        
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('templatelink')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualnetworkName": {
+            "value": "[parameters('virtualnetworkName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('subnetName')]"
+          },
+          "loadbalancerName": {
+            "value": "[parameters('ilbNames')[copyIndex()]]"
+          },
+          "frontendName": {
+            "value": "[parameters('frontendname')]"
+          },
+          "backendpoolName": {
+            "value": "[parameters('backendpoolname')]"
+          },
+          "lbrules": {
+            "value": "[parameters('lbrules')[copyIndex()]]"
+          },
+          "lbprobe": {
+            "value": "[parameters('lbprobe')[copyIndex()]]"
+          }
+        }
+      }
+    }
+  ]
+}
