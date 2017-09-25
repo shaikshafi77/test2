@@ -48,7 +48,7 @@
 
       },
       "dependsOn": [
-        "availabiltySetLoop"
+        "availabilitySetLoop"
       ],
       "properties": {
         "mode": "Incremental",
