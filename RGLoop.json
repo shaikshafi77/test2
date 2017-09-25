@@ -79,9 +79,6 @@
           "lbid": {
             "value": "[variables('inputarray')[copyIndex()].lbid]"
           },
-          "haslb": {
-            "value": "[if(equals(variables('inputarray')[copyIndex()].lbid, json('null')), 'no', 'yes')]"
-          },
           "vmSize": {
             "value": "[variables('inputarray')[copyIndex()].vmsize]"
           },
