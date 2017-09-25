@@ -88,7 +88,7 @@
       "scale": null,
       "properties": {
         "availabilitySet": {
-          "id": "[variables('asid')]"
+          "id": "[concat(resourceId('Microsoft.Compute/AvailabilitySets', parameters('vmNameprefix')), '-AS01')]"
         },
         "hardwareProfile": {
           "vmSize": "[parameters('vmsize')]"
