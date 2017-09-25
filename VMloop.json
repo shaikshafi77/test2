@@ -68,7 +68,7 @@
               },
               "loadBalancerBackendAddressPools": [
                 {
-                  "id": "[if(equals(variables('lbid'), json('null')), json('null'), resourceid(variables('lbid'), concat(parameters('vmNameprefix'), copyIndex(parameters('startingIndex')), '-', parameters('lbtype'), '01','backendAddressPools/BackendPool1')))]"
+                  "id": "[if(equals(variables('lbid'), json('null')), json('null'), concat(variables('lbid'), parameters('vmNameprefix'), copyIndex(parameters('startingIndex')), '-', parameters('lbtype'), '01','/backendAddressPools/BackendPool1'))]"
                 }
               ]
             }
