@@ -25,7 +25,6 @@
     {
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[concat(variables('inputarray')[copyIndex()].Name, '-AS01')]",
-      "resourceGroup": "[variables('ResourceGroup')]",
       "copy": {
         "count": "[length(variables('inputarray'))]",
         "name": "availabilitySetLoop"
@@ -42,7 +41,6 @@
       "apiVersion": "2017-05-10",
       "name": "[concat('RGdeployment',copyIndex())]",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('ResourceGroup')]",
       "copy": {
         "name": "VMloop",
         "count": "[length(variables('inputarray'))]",
