@@ -73,6 +73,9 @@
           "startingIndex": {
             "value": "[variables('inputarray')[copyIndex()].Index]"
           },
+          "lbtype": {
+            "value": "[variables('inputarray')[copyIndex()].lbtype]"
+          },
           "lbid": {
             "value": "[variables('inputarray')[copyIndex()].lbid]"
           },
