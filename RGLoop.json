@@ -29,7 +29,7 @@
         "count": "[length(variables('inputarray'))]",
         "name": "availabilitySetLoop"
       },
-      "apiVersion": "2017-05-10",
+      "apiVersion": "2017-03-30",
       "location": "[resourceGroup().location]",
       "properties": {
         "platformFaultDomainCount": "3",
@@ -47,6 +47,9 @@
         "mode": "Parallel"
 
       },
+      "dependsOn": [
+        "availabiltySetLoop"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
